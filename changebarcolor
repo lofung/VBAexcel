@@ -1,0 +1,35 @@
+Sub CellColorsToChart()
+'Updateby Extendoffice
+    Dim xChart As Chart
+    Dim I As Long, J As Long
+    Dim K As Integer
+    Dim xRowsOrCols As Long, xSCount As Long
+    Dim xRg As Range, xCell As Range
+On Error Resume Next
+
+'Make the first 12 graphs bar color as the same as the cell color
+For K = 1 To 20
+    Set xChart = ActiveSheet.ChartObjects("Chart " & K).Chart
+    If xChart Is Nothing Then Exit Sub
+    xSCount = xChart.SeriesCollection.Count
+    For I = 1 To xSCount
+        J = 1
+        With xChart.SeriesCollection(I)
+            Set xRg = ActiveSheet.Range(Split(Split(.Formula, ",")(2), "!")(1))
+            If xSCount > 4 Then
+                xRowsOrCols = xRg.Columns.Count
+            Else
+                xRowsOrCols = xRg.Rows.Count
+            End If
+            For Each xCell In xRg
+                .Points(J).Format.Fill.ForeColor.RGB = ThisWorkbook.Colors(xCell.Interior.ColorIndex)
+                .Points(J).Format.Line.ForeColor.RGB = ThisWorkbook.Colors(xCell.Interior.ColorIndex)
+                J = J + 1
+            Next xCell
+        End With
+
+    Next I
+
+Next K
+
+End Sub
